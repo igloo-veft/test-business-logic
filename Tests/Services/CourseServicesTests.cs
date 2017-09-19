@@ -205,7 +205,7 @@ namespace CoursesAPI.Tests.Services
 
 			// Assert:
 			//Assert.Fail();
-			Assert.IsTrue(dto.Any(s => s.MainTeacher == ""));
+			Assert.IsTrue(dto.All(s => s.MainTeacher == ""));
 		}
 
 		// TODO!!! you should write more unit tests here!
