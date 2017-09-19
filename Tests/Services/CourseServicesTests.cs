@@ -200,7 +200,8 @@ namespace CoursesAPI.Tests.Services
 				Type = TeacherType.MainTeacher
 			};
 
-			// Act: 
+			// Act:
+			var dto = _service.AddTeacherToCourse(COURSEID_VEFT_20153, model);
 		}
 
 		/// <summary>
@@ -219,8 +220,8 @@ namespace CoursesAPI.Tests.Services
 				Type = TeacherType.MainTeacher
 			};
 			
-
 			// Act:
+			var dto = _service.AddTeacherToCourse(COURSEID_VEFT_20153, model);
 		}
 
 		/// <summary>
@@ -240,7 +241,7 @@ namespace CoursesAPI.Tests.Services
 			};
 
 			// Act:
-
+			var dto = _service.AddTeacherToCourse(COURSEID_VEFT_20153, model);
 		}
 
 		#endregion
