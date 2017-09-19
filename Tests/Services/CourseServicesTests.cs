@@ -17,6 +17,8 @@ namespace CoursesAPI.Tests.Services
 		private CoursesServiceProvider _service;
 		private List<TeacherRegistration> _teacherRegistrations;
 
+		private List<CourseInstance> _courseInstance; // ADDED
+
 		private const string SSN_DABS    = "1203735289";
 		private const string SSN_GUNNA   = "1234567890";
 		private const string INVALID_SSN = "9876543210";
@@ -107,21 +109,100 @@ namespace CoursesAPI.Tests.Services
 			// more mock data to the mockUnitOfWork!
 
 			_service = new CoursesServiceProvider(_mockUnitOfWork);
+			_courseInstance = courses;
 		}
 
 		#region GetCoursesBySemester
 		/// <summary>
-		/// TODO: implement this test, and several others!
+		/// Returns an empty list when 
 		/// </summary>
 		[TestMethod]
-		public void GetCoursesBySemester_ReturnsEmptyListWhenNoDataDefined()
+		public void GetCoursesBySemester_ReturnsEmptyListWhenInvalidDataDefined()
 		{
 			// Arrange:
 
 			// Act:
+			var dto = _service.GetCourseInstancesBySemester("99999");
 
 			// Assert:
 			// Assert.True(true);
+			Assert.IsTrue(dto.Count == 0);
+		}
+
+		/// <summary>
+		/// Returns the total correct amount of courses for a valid semester
+		/// </summary>
+		[TestMethod]
+		public void GetCoursesBySemester_ReturnsCorrectAmountOfCoursesWhenValidDataDefined()
+		{
+			// Arrange:
+
+			// Act:
+			var dto = _service.GetCourseInstancesBySemester("20153");
+
+			// Assert:
+			Assert.IsTrue(dto.Count == 1);
+			Assert.IsFalse(dto.Count < 1);
+			Assert.IsFalse(dto.Count > 1);
+		}
+
+		/// <summary>
+		/// Returns only courses from semester 20153 if no semester is defined when
+		/// calling GetCoursesBySemester
+		/// </summary>
+		[TestMethod]
+		public void GetCoursesBySemester_ReturnsCoursesForSemester20153WhenNoSemesterDefined()
+		{
+			// Arrange:
+
+			// Act:
+			// join the results from calling getcoursesbysemester with courses above to get
+			// whether the semester number is correct
+			var dto = _service.GetCourseInstancesBySemester("");
+			var courses = (from c in dto
+				join ct in _courseInstance on c.CourseInstanceID equals ct.ID
+				where ct.SemesterID == "20153"
+				select ct.SemesterID).ToList();
+			//var courses = _courseInstance.Where(x => x.SemesterID == "20153").ToList();
+
+			// Assert:
+			//Assert.IsTrue(dto.Exists(s => s.SemesterID = "20153"));
+			//Assert.AreSame(dto, courses);
+			//Assert.IsTrue(courses.Contains("20153"));
+			Assert.IsTrue(courses.All(s => s == "20153"));
+		}
+
+		/// <summary>
+		/// TODO: implement this test, and several others!
+		/// </summary>
+		[TestMethod]
+		public void GetCoursesBySemester_EachReturnedCourseHasAMainTeacherName()
+		{
+			// Arrange:
+
+			// Act:
+			var dto = _service.GetCourseInstancesBySemester("20153");
+			//var test = dto.Any(s => s.MainTeacher == "");
+			// Assert:
+			//Assert.IsTrue(dto.Exists(s => s.MainTeacher == "Daníel B. Sigurgeirsson"));
+			//Assert.IsTrue(dto.Find(s => s.MainTeacher != ""));
+			Assert.IsFalse(dto.Any(s => s.MainTeacher == ""));
+		}
+
+		/// <summary>
+		/// TODO: implement this test, and several others!
+		/// </summary>
+		[TestMethod]
+		public void GetCoursesBySemester_EmptyStringForMainTeacherNameIfMainTeacherNotYetDefined()
+		{
+			// Arrange:
+
+			// Act:
+			var dto = _service.GetCourseInstancesBySemester("20163");
+
+			// Assert:
+			//Assert.Fail();
+			Assert.IsTrue(dto.Any(s => s.MainTeacher == ""));
 		}
 
 		// TODO!!! you should write more unit tests here!
