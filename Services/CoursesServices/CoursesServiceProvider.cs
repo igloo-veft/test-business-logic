@@ -34,8 +34,19 @@ namespace CoursesAPI.Services.CoursesServices
 		/// <returns>Should return basic information about the person.</returns>
 		public PersonDTO AddTeacherToCourse(int courseInstanceID, AddTeacherViewModel model)
 		{
-			// TODO: implement this logic!
-			return null;
+			var teacher = _persons.All().SingleOrDefault(t => model.SSN == t.SSN);
+
+			_teacherRegistrations.Add(
+				new TeacherRegistration
+				{
+					SSN = model.SSN,
+					CourseInstanceID = courseInstanceID,
+					Type = model.Type
+				}
+			);
+			_uow.Save();
+
+			return ( new PersonDTO { SSN = teacher.SSN, Name = teacher.Name });
 		}
 
 		/// <summary>
