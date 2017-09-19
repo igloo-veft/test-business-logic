@@ -182,8 +182,9 @@ namespace CoursesAPI.Tests.Services
 			};
 
 			// Act:
-		}
+			var dto = _service.AddTeacherToCourse(16, model);
 
+		}
 		/// <summary>
 		/// Ensure it is not possible to add a person as a teacher
 		/// when that person is not registered in the system.
