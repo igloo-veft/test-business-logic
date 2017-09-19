@@ -140,6 +140,8 @@ namespace CoursesAPI.Tests.Services
 			// Act:
 			var dto = _service.GetCourseInstancesBySemester("20153");
 
+			var counted = _courseInstance.Where(s => s.SemesterID == "20153").Count(); // We already know the test data is supposed to be one
+
 			// Assert:
 			Assert.IsTrue(dto.Count == 1);
 			Assert.IsFalse(dto.Count < 1);
@@ -173,7 +175,7 @@ namespace CoursesAPI.Tests.Services
 		}
 
 		/// <summary>
-		/// TODO: implement this test, and several others!
+		/// Courses with a main teacher return a main teacher name
 		/// </summary>
 		[TestMethod]
 		public void GetCoursesBySemester_EachReturnedCourseHasAMainTeacherName()
@@ -183,6 +185,7 @@ namespace CoursesAPI.Tests.Services
 			// Act:
 			var dto = _service.GetCourseInstancesBySemester("20153");
 			//var test = dto.Any(s => s.MainTeacher == "");
+
 			// Assert:
 			//Assert.IsTrue(dto.Exists(s => s.MainTeacher == "Daníel B. Sigurgeirsson"));
 			//Assert.IsTrue(dto.Find(s => s.MainTeacher != ""));
@@ -190,7 +193,7 @@ namespace CoursesAPI.Tests.Services
 		}
 
 		/// <summary>
-		/// TODO: implement this test, and several others!
+		/// Courses without a main teacher have an empty string in the name field
 		/// </summary>
 		[TestMethod]
 		public void GetCoursesBySemester_EmptyStringForMainTeacherNameIfMainTeacherNotYetDefined()
