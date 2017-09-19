@@ -91,16 +91,24 @@ namespace CoursesAPI.Services.CoursesServices
 			{
 				semester = "20153";
 			}
+			var teachernames = (from t in _teacherRegistrations.All()
+				join p in _persons.All() on t.SSN equals p.SSN
+				select new 
+				{
+					CourseInstanceID = t.CourseInstanceID,
+					Name = p.Name
+				}).ToList();
 
 			var courses = (from c in _courseInstances.All()
 				join ct in _courseTemplates.All() on c.CourseID equals ct.CourseID
+				join t in teachernames on c.ID equals t.CourseInstanceID
 				where c.SemesterID == semester
 				select new CourseInstanceDTO
 				{
 					Name               = ct.Name,
 					TemplateID         = ct.CourseID,
 					CourseInstanceID   = c.ID,
-					MainTeacher        = "" // Hint: it should not always return an empty string!
+					MainTeacher        = t.Name //"" // Hint: it should not always return an empty string!
 				}).ToList();
 
 			return courses;
