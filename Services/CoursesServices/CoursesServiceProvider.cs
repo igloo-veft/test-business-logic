@@ -4,6 +4,7 @@ using CoursesAPI.Models;
 using CoursesAPI.Services.DataAccess;
 using CoursesAPI.Services.Exceptions;
 using CoursesAPI.Services.Models.Entities;
+using static CoursesAPI.Models.TeacherType;
 
 namespace CoursesAPI.Services.CoursesServices
 {
@@ -34,7 +35,35 @@ namespace CoursesAPI.Services.CoursesServices
 		/// <returns>Should return basic information about the person.</returns>
 		public PersonDTO AddTeacherToCourse(int courseInstanceID, AddTeacherViewModel model)
 		{
+
 			var teacher = _persons.All().SingleOrDefault(t => model.SSN == t.SSN);
+
+			var course = _courseInstances.All().SingleOrDefault(t => courseInstanceID == t.ID);
+
+			if(course == null)
+			{
+				throw new AppObjectNotFoundException();
+			}
+			else if(teacher == null)
+			{
+				throw new AppObjectNotFoundException();
+			}
+			
+			var mainTeacherAmount = _teacherRegistrations.All().Where(t => courseInstanceID == t.CourseInstanceID 
+																		&& t.Type == MainTeacher).Count();
+
+			if(mainTeacherAmount >= 1 && model.Type == MainTeacher)
+			{
+				throw new AppValidationException("A main teacher has been assigned for this course already");
+			}
+
+			var teacherRegistered = _teacherRegistrations.All().SingleOrDefault(t => courseInstanceID == t.CourseInstanceID 
+																			&& t.SSN == model.SSN);
+
+			if(teacherRegistered != null)
+			{
+				throw new AppValidationException("This person is already registered as teacher in this course");
+			}
 
 			_teacherRegistrations.Add(
 				new TeacherRegistration
