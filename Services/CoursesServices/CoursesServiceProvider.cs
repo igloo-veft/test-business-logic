@@ -91,8 +91,10 @@ namespace CoursesAPI.Services.CoursesServices
 			{
 				semester = "20153";
 			}
+			
 			var teachernames = (from t in _teacherRegistrations.All()
 				join p in _persons.All() on t.SSN equals p.SSN
+				where t.Type == MainTeacher
 				select new 
 				{
 					CourseInstanceID = t.CourseInstanceID,
@@ -101,7 +103,8 @@ namespace CoursesAPI.Services.CoursesServices
 
 			var courses = (from c in _courseInstances.All()
 				join ct in _courseTemplates.All() on c.CourseID equals ct.CourseID
-				join t in teachernames on c.ID equals t.CourseInstanceID
+				join t in teachernames on c.ID equals t.CourseInstanceID // needs an outer join
+				//into temp from name in temp.DefaultIfEmpty()
 				where c.SemesterID == semester
 				select new CourseInstanceDTO
 				{
